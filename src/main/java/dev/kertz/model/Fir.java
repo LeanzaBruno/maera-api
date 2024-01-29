@@ -5,24 +5,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
 
 
 @Entity
+@Getter
 public class Fir {
 	@Id
-	@Column(length = 4)
-	private String code;
+	private int code;
+
+	@Column(length = 3)
+	private String identifier;
 	
 	private String name;
-	
+
 	@OneToMany(mappedBy = "fir")
 	private Set<Airport> airports;
-	
-	public String getCode() {
-		return code;
-	}
-	
-	public String getName() {
-		return name;
-	}
 }

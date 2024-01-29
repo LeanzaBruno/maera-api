@@ -2,34 +2,18 @@ package dev.kertz.core;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dev.kertz.model.Fir;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import dev.kertz.model.Airport;
 
 public final class ReportDownloader {
-	
-	/**
-	 * Gets metar from a single airport
-	 * @param aiport
-	 * @return the metar
-	 */
-	public static String getMetar(Airport airport) {
-		String url = WeatherReport.METAR.url + airport.getICAO();
-		String metar = "";
-		
-		try {
-			Document page = Jsoup.connect(url).get();
-			metar = Parser.getReports(page, WeatherReport.METAR).get(0);
-		}
-		catch(Exception e) { e.printStackTrace(); }
-		return metar;
-	}
-
 
 	/**
 	 * Gets taf from a list of airports
-	 * @param airport list
-	 * @return a list of string containing the tafs
+	 * @param airports list of airports
+	 * @return list of string containing the tafs
 	 */
 	public static List<String> getTafs(List<Airport> airports) {
 		List<String> taf = new ArrayList<>();
@@ -40,7 +24,7 @@ public final class ReportDownloader {
 		
 		try {
 			Document page = Jsoup.connect(url).get();
-			taf = Parser.getReports(page, WeatherReport.TAF);
+			taf = Parser.getReports(page);
 		}
 		catch(Exception e) { e.printStackTrace(); }
 		return taf;
@@ -49,7 +33,7 @@ public final class ReportDownloader {
 	
 	/**
 	 * Gets metar from a list of airports
-	 * @param airport list
+	 * @param airports list
 	 * @return a list of string containing the metars
 	 */
 	public static List<String> getMetars(List<Airport> airports) {
@@ -61,10 +45,28 @@ public final class ReportDownloader {
 		
 		try {
 			Document page = Jsoup.connect(url).get();
-			metars = Parser.getReports(page, WeatherReport.METAR);
+			metars = Parser.getReports(page);
 		}
 		catch(Exception e) { e.printStackTrace(); }
 		return metars;
+	}
+
+	/**
+	 * Gets the pronarea of a fir
+	 * @param fir
+	 * @return
+	 */
+	public static String getPronarea(Fir fir){
+		String url = WeatherReport.PRONAREA.url;
+		url = url.replace("??", String.valueOf(fir.getCode()) );
+		String pronarea = "";
+
+		try {
+			Document page = Jsoup.connect(url).get();
+			pronarea = Parser.getReports(page).get(0);
+		}
+		catch(Exception exception) { exception.printStackTrace(); }
+		return pronarea;
 	}
 
 }

@@ -13,10 +13,9 @@ class Parser{
 		/**
 		 * Parse the html page to obtain the report
 		 * @param html the html of the page
-		 * @param type the type of the report
 		 * @return the report parsed
 		 */
-		static List<String> getReports(Document html, WeatherReport type) {
+		static List<String> getReports(Document html) {
 			Elements results = html.select(QUERY);
 			List<String> reports = new ArrayList<>();
 			

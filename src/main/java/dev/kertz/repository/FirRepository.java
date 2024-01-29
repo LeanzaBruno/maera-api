@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import dev.kertz.model.Fir;
 
 public interface FirRepository extends CrudRepository<Fir, String> {
-	Optional<Fir> findByCodeIgnoreCase(String code);
+	Optional<Fir> findByIdentifierIgnoreCase(String identifier);
 }

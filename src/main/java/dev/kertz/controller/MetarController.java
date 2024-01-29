@@ -31,13 +31,13 @@ public class MetarController {
 	@GetMapping("/{code}")
 	public String getMetar(@PathVariable String code){
 		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		return ReportDownloader.getMetar(airport);
+		return ReportDownloader.getMetars( List.of(airport) ).get(0);
 	}
 	
 	
 	@GetMapping("/fir/{fir}")
 	public List<String> getMetarsByFir(@PathVariable String fir){
-		Fir firObj = firRepository.findByCodeIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
+		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		return ReportDownloader.getMetars(airports);
 	}
