@@ -8,10 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 class Parser{
-		private final static String FORM_TAG = "form[name='imprimir']";
-		private final static String RESULT_HEADER = "tr[class=result]";
-		private final static String TABLE_TAG = "table";
-		private final static String REPORT =  "td[width]";
+		private final static String QUERY =  "td[width]";
 
 		/**
 		 * Parse the html page to obtain the report
@@ -19,18 +16,8 @@ class Parser{
 		 * @param type the type of the report
 		 * @return the report parsed
 		 */
-		static String getReport(Document html, WeatherReport type) {
-			Elements resultForm = html.select(FORM_TAG);
-			Elements table = resultForm.select(TABLE_TAG);
-			Elements result = table.select(RESULT_HEADER);
-			if( result.isEmpty())
-				return "No se encontró " + type.name();
-			return result.select(REPORT).text();
-		}
-
-
 		static List<String> getReports(Document html, WeatherReport type) {
-			Elements results = html.select(RESULT_HEADER);
+			Elements results = html.select(QUERY);
 			List<String> reports = new ArrayList<>();
 			
 			for(Element e : results )

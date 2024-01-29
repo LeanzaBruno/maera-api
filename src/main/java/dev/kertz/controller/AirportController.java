@@ -26,7 +26,7 @@ class AirportController{
 	
 	@GetMapping("/{code}")
 	public Airport getAirport(@PathVariable String code) {
-		return repository.findByICAO(code.toUpperCase()).orElseThrow( () -> new AirportNotFoundException(code));
+		return repository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
 	}
 
 }
