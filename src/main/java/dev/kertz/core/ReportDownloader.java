@@ -2,7 +2,6 @@ package dev.kertz.core;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import dev.kertz.model.Fir;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,13 +16,13 @@ public final class ReportDownloader {
 	 */
 	public static List<String> getTafs(List<Airport> airports) {
 		List<String> taf = new ArrayList<>();
-		String url = WeatherReport.TAF.url;
+		StringBuilder url = new StringBuilder(WeatherReport.TAF.url);
 
 		for(Airport airport : airports )
-			url += airport.getICAO() + "+";
+			url.append(airport.getICAO()).append("+");
 		
 		try {
-			Document page = Jsoup.connect(url).get();
+			Document page = Jsoup.connect(url.toString()).get();
 			taf = Parser.getReports(page);
 		}
 		catch(Exception e) { e.printStackTrace(); }

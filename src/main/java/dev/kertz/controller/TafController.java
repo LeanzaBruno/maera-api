@@ -3,6 +3,7 @@ package dev.kertz.controller;
 import java.util.List;
 import dev.kertz.exception.FirNotFoundException;
 import dev.kertz.model.Fir;
+import dev.kertz.model.Taf;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,9 @@ public class TafController {
 	
 	
 	@GetMapping("/{code}")
-	public String getTaf(@PathVariable String code) {
+	public Taf getTaf(@PathVariable String code) {
 		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		return ReportDownloader.getTafs( List.of(airport) ).get(0);
+		return new Taf(ReportDownloader.getTafs( List.of(airport) ).get(0), airport );
 	}
 	
 	@GetMapping("/fir/{fir}")
