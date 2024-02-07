@@ -2,18 +2,21 @@ package dev.kertz.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import dev.kertz.model.Fir;
+
+import dev.kertz.model.Metar;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import dev.kertz.model.Airport;
 
 public final class ReportDownloader {
 
+
 	/**
 	 * Gets taf from a list of airports
 	 * @param airports list of airports
 	 * @return list of string containing the tafs
 	 */
+	/*
 	public static List<String> getTafs(List<Airport> airports) {
 		List<String> taf = new ArrayList<>();
 		StringBuilder url = new StringBuilder(WeatherReport.TAF.url);
@@ -28,6 +31,7 @@ public final class ReportDownloader {
 		catch(Exception e) { e.printStackTrace(); }
 		return taf;
 	}
+	 */
 	
 	
 	/**
@@ -35,16 +39,16 @@ public final class ReportDownloader {
 	 * @param airports list
 	 * @return a list of string containing the metars
 	 */
-	public static List<String> getMetars(List<Airport> airports) {
-		String url = WeatherReport.METAR.url;
+	public static List<Metar> getMetars(List<Airport> airports) {
+		StringBuilder url = new StringBuilder(WeatherReport.METAR.url);
 		for(Airport airport : airports )
-			url += airport.getICAO() + "+";
+			url.append(airport.getICAO()).append("+");
 			
-		List<String> metars = new ArrayList<>();
+		List<Metar> metars = new ArrayList<>();
 		
 		try {
-			Document page = Jsoup.connect(url).get();
-			metars = Parser.getReports(page);
+			Document page = Jsoup.connect(url.toString()).get();
+			metars = Parser.parseMetars(page);
 		}
 		catch(Exception e) { e.printStackTrace(); }
 		return metars;
@@ -55,6 +59,7 @@ public final class ReportDownloader {
 	 * @param fir
 	 * @return
 	 */
+	/*
 	public static String getPronarea(Fir fir){
 		String url = WeatherReport.PRONAREA.url;
 		url = url.replace("??", String.valueOf(fir.getCode()) );
@@ -67,5 +72,6 @@ public final class ReportDownloader {
 		catch(Exception exception) { exception.printStackTrace(); }
 		return pronarea;
 	}
+	*/
 
 }

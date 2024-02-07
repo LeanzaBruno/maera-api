@@ -1,9 +1,29 @@
 package dev.kertz.model;
 
-import lombok.Data;
+import dev.kertz.core.MetarDecoder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class Metar {
-    private final String raw;
-    private final Airport airport;
+import java.util.List;
+
+@Getter
+@Setter
+public class Metar extends AviationBriefing {
+
+    private WindInformation wind;
+    private String pressure;
+    private TemperatureInfo temperature;
+    private String visibility;
+    private String remarks;
+    private List<String> clouds;
+    private boolean isCavok;
+    private boolean noSignificantClouds;
+    private boolean noSignificalChanges;
+
+    public Metar(String raw){
+        super(raw);
+        MetarDecoder.decode(this);
+    }
+
 }
+

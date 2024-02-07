@@ -26,7 +26,8 @@ public class TafController {
 		this.firRepository = firRepository;
 	}
 	
-	
+
+	/*
 	@GetMapping("/{code}")
 	public Taf getTaf(@PathVariable String code) {
 		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
@@ -39,5 +40,6 @@ public class TafController {
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		return ReportDownloader.getTafs(airports);
 	}
+	 */
 
 }

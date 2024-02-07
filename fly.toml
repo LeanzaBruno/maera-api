@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for maera on 2024-02-01T14:00:54-03:00
+# fly.toml app configuration file generated for maera-api on 2024-02-05T13:38:03-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'maera'
+app = 'maera-api'
 primary_region = 'eze'
 
 [build]

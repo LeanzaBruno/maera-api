@@ -5,7 +5,7 @@ INSERT INTO fir (code, identifier, name) VALUES
 (87860, 'CRV', 'Comodoro Rivadavia'),
 (87155, 'SIS', 'Resistencia');
 
-INSERT INTO airport (icao, anac, name, fir, hasTAF, hasPronarea) VALUES
+INSERT INTO airport (icao, iata, name, fir, hasTAF, hasPronarea) VALUES
 ('SAEZ', 'EZE', 'Aeropuerto internacional Ministro Pistarini', 87582, true, true),
 ('SABE', 'AEP', 'Aeroparque Jorge Newbery', 87582, true, false),
 ('SAZB', 'BCA', 'Aeropuerto Comandante Espora', 87582, true, false),

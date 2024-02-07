@@ -1,7 +1,7 @@
 package dev.kertz.controller;
 
 import java.util.List;
-
+import dev.kertz.model.AviationBriefing;
 import dev.kertz.model.Metar;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,24 +21,23 @@ public class MetarController {
 	
 	private final AirportRepository airportRepository;
 	private final FirRepository firRepository;
-	
+
 	MetarController(AirportRepository airportRepository,
 					FirRepository firRepository
 			){
 		this.airportRepository = airportRepository;
 		this.firRepository = firRepository;
 	}
-	
 
 	@GetMapping("/{code}")
-	public Metar getMetar(@PathVariable String code){
+	public AviationBriefing getMetar(@PathVariable String code){
 		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		return new Metar( ReportDownloader.getMetars( List.of(airport) ).get(0), airport );
+		return ReportDownloader.getMetars( List.of(airport) ).get(0);
 	}
-	
+
 	
 	@GetMapping("/fir/{fir}")
-	public List<String> getMetarsByFir(@PathVariable String fir){
+	public List<Metar> getMetarsByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		return ReportDownloader.getMetars(airports);

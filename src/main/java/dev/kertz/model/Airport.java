@@ -1,13 +1,7 @@
 package dev.kertz.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -19,14 +13,20 @@ public class Airport {
 	private String ICAO;
 
 	@Column(length = 3)
-	private String ANAC;
+	private String IATA;
 
 	private String name;
 	
 	@ManyToOne
 	@JoinColumn(name = "fir")
 	private Fir fir;
-	
+
+	/*
+	@OneToMany
+	@Size(min = 0, max = 10)
+	private List<Metar> metars = new ArrayList<>(10);
+	 */
+
 	private boolean hasTAF;
 
 	private boolean hasPRONAREA;
@@ -34,4 +34,5 @@ public class Airport {
 	public String getFir() {
 		return fir.getName();
 	}
+
 }

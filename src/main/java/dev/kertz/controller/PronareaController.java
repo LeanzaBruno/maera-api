@@ -19,10 +19,13 @@ public class PronareaController {
         this.firRepository = firRepository;
     }
 
+    /*
     @GetMapping("/{fir}")
     public Pronarea getPronarea(@PathVariable String fir){
         Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir));
         return new Pronarea( ReportDownloader.getPronarea(firObj) ) ;
     }
+
+     */
 
 }
