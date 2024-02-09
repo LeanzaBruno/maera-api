@@ -1,29 +1,15 @@
 package dev.kertz.model;
 
-import dev.kertz.core.MetarDecoder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
 
-import java.util.List;
-
-@Getter
-@Setter
-public class Metar extends AviationBriefing {
-
-    private WindInformation wind;
-    private String pressure;
-    private TemperatureInfo temperature;
-    private String visibility;
-    private String remarks;
-    private List<String> clouds;
-    private boolean isCavok;
-    private boolean noSignificantClouds;
-    private boolean noSignificalChanges;
-
-    public Metar(String raw){
-        super(raw);
-        MetarDecoder.decode(this);
-    }
-
+@Data
+public class Metar {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private final String raw;
 }
 

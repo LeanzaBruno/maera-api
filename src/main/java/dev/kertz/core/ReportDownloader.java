@@ -1,38 +1,35 @@
 package dev.kertz.core;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.kertz.model.Metar;
+import dev.kertz.model.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import dev.kertz.model.Airport;
 
 public final class ReportDownloader {
-
 
 	/**
 	 * Gets taf from a list of airports
 	 * @param airports list of airports
 	 * @return list of string containing the tafs
 	 */
-	/*
-	public static List<String> getTafs(List<Airport> airports) {
-		List<String> taf = new ArrayList<>();
-		StringBuilder url = new StringBuilder(WeatherReport.TAF.url);
+	public static List<Taf> getTafs(List<Airport> airports) {
+		List<Taf> tafs = new ArrayList<>();
+		StringBuilder url = new StringBuilder(WeatherBriefing.TAF.url);
 
 		for(Airport airport : airports )
 			url.append(airport.getICAO()).append("+");
 		
 		try {
 			Document page = Jsoup.connect(url.toString()).get();
-			taf = Parser.getReports(page);
+			tafs = Parser.parseTafs(page);
 		}
 		catch(Exception e) { e.printStackTrace(); }
-		return taf;
+		return tafs;
 	}
-	 */
-	
+
 	
 	/**
 	 * Gets metar from a list of airports
@@ -40,7 +37,7 @@ public final class ReportDownloader {
 	 * @return a list of string containing the metars
 	 */
 	public static List<Metar> getMetars(List<Airport> airports) {
-		StringBuilder url = new StringBuilder(WeatherReport.METAR.url);
+		StringBuilder url = new StringBuilder(WeatherBriefing.METAR.url);
 		for(Airport airport : airports )
 			url.append(airport.getICAO()).append("+");
 			
@@ -54,24 +51,19 @@ public final class ReportDownloader {
 		return metars;
 	}
 
-	/**
-	 * Gets the pronarea of a fir
-	 * @param fir
-	 * @return
-	 */
-	/*
-	public static String getPronarea(Fir fir){
-		String url = WeatherReport.PRONAREA.url;
+	public static Pronarea getPronarea(Fir fir){
+		String url = WeatherBriefing.PRONAREA.url;
 		url = url.replace("??", String.valueOf(fir.getCode()) );
-		String pronarea = "";
+		Pronarea pronarea = new Pronarea();
 
 		try {
 			Document page = Jsoup.connect(url).get();
-			pronarea = Parser.getReports(page).get(0);
+			pronarea.setRaw( Parser.getReportsFromPage(page).get(0) );
 		}
-		catch(Exception exception) { exception.printStackTrace(); }
+		catch(Exception exception) {
+			System.out.println("Error: Ocurrió un error al intentar descargar el pronarea.");
+		}
 		return pronarea;
 	}
-	*/
 
 }

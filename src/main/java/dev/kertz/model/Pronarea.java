@@ -1,8 +1,11 @@
 package dev.kertz.model;
 
+import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
 public class Pronarea {
-    private final String raw;
+    @Id
+    private long id;
+    private String raw;
 }

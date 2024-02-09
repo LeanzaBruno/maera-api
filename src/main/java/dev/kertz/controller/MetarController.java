@@ -1,7 +1,10 @@
 package dev.kertz.controller;
 
 import java.util.List;
-import dev.kertz.model.AviationBriefing;
+import java.util.stream.Collectors;
+
+import dev.kertz.dto.Mapper;
+import dev.kertz.dto.MetarDTO;
 import dev.kertz.model.Metar;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +17,8 @@ import dev.kertz.model.Airport;
 import dev.kertz.model.Fir;
 import dev.kertz.repository.AirportRepository;
 import dev.kertz.repository.FirRepository;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping( path = "/metar", produces = "application/json")
@@ -30,16 +35,20 @@ public class MetarController {
 	}
 
 	@GetMapping("/{code}")
-	public AviationBriefing getMetar(@PathVariable String code){
+	public MetarDTO getMetar(@PathVariable String code){
 		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		return ReportDownloader.getMetars( List.of(airport) ).get(0);
+		Metar metar = ReportDownloader.getMetars( List.of(airport) ).get(0);
+		// TODO metarRepository.save(metar);
+		return Mapper.toDTO(metar);
 	}
 
 	
 	@GetMapping("/fir/{fir}")
-	public List<Metar> getMetarsByFir(@PathVariable String fir){
+	public List<MetarDTO> getMetarsByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
-		return ReportDownloader.getMetars(airports);
+		List<Metar> metars = ReportDownloader.getMetars(airports);
+		// TODO metarRepository.save(metars)
+		return metars.stream().map(Mapper::toDTO).collect(toList());
 	}
 }

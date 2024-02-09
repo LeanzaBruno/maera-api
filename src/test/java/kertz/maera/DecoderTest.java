@@ -1,6 +1,5 @@
 package kertz.maera;
 
-import dev.kertz.core.MetarDecoder;
 import dev.kertz.model.Metar;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
