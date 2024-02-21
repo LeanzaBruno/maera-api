@@ -28,21 +28,19 @@ public class MetarController {
 		this.firRepository = firRepository;
 	}
 
-	@GetMapping
-	public MetarDTO getMetar(@RequestParam(required = false) String code, @RequestParam(required = false) String fir){
-		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		Metar metar = ReportDownloader.getMetars( List.of(airport) ).get(0);
-		// TODO metarRepository.save(metar);
+	@GetMapping("/airports/{icao}")
+	public MetarDTO getMetar(@PathVariable String icao){
+		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
+		Metar metar = ReportDownloader.getMetars( List.of(airport) ).getFirst();
 		return MetarMapper.toDTO(metar);
 	}
 
 	
-	@GetMapping("/fir")
-	public List<MetarDTO> getMetarsByFir(@RequestParam String fir){
+	@GetMapping("/fir/{fir}")
+	public List<MetarDTO> getMetarsByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		List<Metar> metars = ReportDownloader.getMetars(airports);
-		// TODO metarRepository.save(metars)
 		return metars.stream().map(MetarMapper::toDTO).collect(toList());
 	}
 }

@@ -1,10 +1,9 @@
 package dev.kertz.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
+@Entity
 @Data
 public class Taf {
     @Id
@@ -12,5 +11,6 @@ public class Taf {
     private long id;
     private final String raw;
 
-
+    @ManyToOne
+    private final Airport airport;
 }

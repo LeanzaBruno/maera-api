@@ -2,13 +2,14 @@ package dev.kertz.decode;
 
 import java.util.List;
 
-public class MetarDecoders{
+public class TafDecoders {
+
     public static final List<Decoder> list = List.of(
-            new EndOfReportDecoder(),
             new ReportTypeDecoder(),
             new AirportDecoder(),
             new PublicationDecoder(),
             new WindDecoder(),
+            new ValidPeriodDecoder(),
             new WindVariationDecoder(),
             new VisibilityDecoder(),
             new CealingAndVisibilityOKDecoder(),
@@ -19,6 +20,8 @@ public class MetarDecoders{
             new PrecipitationDecoder(),
             new BecomingDecoder(),
             new NoSignificalChangesDecoder(),
-            new RemarkDecoder()
+            new RemarkDecoder(),
+            new EndOfReportDecoder()
     );
+
 }

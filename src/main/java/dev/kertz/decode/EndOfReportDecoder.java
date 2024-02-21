@@ -1,5 +1,8 @@
 package dev.kertz.decode;
 
+import java.util.List;
+import java.util.Optional;
+
 public class EndOfReportDecoder extends Decoder {
 
     EndOfReportDecoder(){
@@ -7,7 +10,9 @@ public class EndOfReportDecoder extends Decoder {
     }
 
     @Override
-    public String decode(String section) {
-        return super.getMatcher(section).find() ? "Fin del reporte." : null;
+    public Optional<Decodification> decode(String section, String nextSection) {
+        return super.getMatcher(section).find()
+                ? Optional.of(new Decodification(List.of(section), "Fin del reporte"))
+                : Optional.empty();
     }
 }

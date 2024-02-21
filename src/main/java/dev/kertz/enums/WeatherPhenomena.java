@@ -1,4 +1,4 @@
-package dev.kertz.dto;
+package dev.kertz.enums;
 
 import lombok.Getter;
 

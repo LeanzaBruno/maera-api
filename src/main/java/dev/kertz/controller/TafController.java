@@ -1,9 +1,8 @@
 package dev.kertz.controller;
 
 import java.util.List;
-
-import dev.kertz.dto.Mapper;
-import dev.kertz.dto.TafDTO;
+import dev.kertz.dto.ReportDTO;
+import dev.kertz.dto.TafMapper;
 import dev.kertz.exception.FirNotFoundException;
 import dev.kertz.model.Fir;
 import dev.kertz.model.Taf;
@@ -16,7 +15,6 @@ import dev.kertz.exception.AirportNotFoundException;
 import dev.kertz.model.Airport;
 import dev.kertz.repository.AirportRepository;
 import dev.kertz.repository.FirRepository;
-
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -32,20 +30,20 @@ public class TafController {
 	}
 	
 
-	@GetMapping("/{code}")
-	public TafDTO getTaf(@PathVariable String code) {
-		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
-		Taf taf = ReportDownloader.getTafs( List.of(airport) ).get(0);
+	@GetMapping("/airports/{icao}")
+	public ReportDTO getTaf(@PathVariable String icao) {
+		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
+		Taf taf = ReportDownloader.getTafs( List.of(airport) ).getFirst();
 		// TODO tafRepository.save(taf);
-		return Mapper.toDTO(taf);
+		return TafMapper.toDTO(taf);
 	}
 	
 	@GetMapping("/fir/{fir}")
-	public List<TafDTO> getTafByFir(@PathVariable String fir){
+	public List<ReportDTO> getTafByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		List<Taf> tafs = ReportDownloader.getTafs(airports);
 		// TODO tafRepository.save(tafs)
-		return tafs.stream().map(Mapper::toDTO).collect(toList());
+		return tafs.stream().map(TafMapper::toDTO).collect(toList());
 	}
 }

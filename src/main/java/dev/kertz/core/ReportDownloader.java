@@ -24,9 +24,13 @@ public final class ReportDownloader {
 		
 		try {
 			Document page = Jsoup.connect(url.toString()).get();
-			tafs = Parser.parseTafs(page);
+			List<String> rawReports = Parser.getRawReports(page);
+			for(int index = 0 ; index < rawReports.size() ; ++index)
+				tafs.add( new Taf(rawReports.get(index), airports.get(index)) );
 		}
-		catch(Exception e) { e.printStackTrace(); }
+		catch(Exception e) {
+			System.out.println("Error: Couldn't download reports");
+		}
 		return tafs;
 	}
 
@@ -40,14 +44,18 @@ public final class ReportDownloader {
 		StringBuilder url = new StringBuilder(WeatherBriefing.METAR.url);
 		for(Airport airport : airports )
 			url.append(airport.getICAO()).append("+");
-			
+
 		List<Metar> metars = new ArrayList<>();
-		
 		try {
 			Document page = Jsoup.connect(url.toString()).get();
-			metars = Parser.parseMetars(page);
+			List<String> rawReports = Parser.getRawReports(page);
+
+			for(int index = 0 ; index < rawReports.size() ; ++index)
+				metars.add( new Metar(rawReports.get(index), airports.get(index)) );
 		}
-		catch(Exception e) { e.printStackTrace(); }
+		catch(Exception e) {
+			System.out.println("Error: Reports couldn't be downloaded");
+		}
 		return metars;
 	}
 
@@ -58,7 +66,7 @@ public final class ReportDownloader {
 
 		try {
 			Document page = Jsoup.connect(url).get();
-			pronarea.setRaw( Parser.getReportsFromPage(page).get(0) );
+			pronarea.setRaw( Parser.getRawReports(page).getFirst() );
 		}
 		catch(Exception exception) {
 			System.out.println("Error: Ocurrió un error al intentar descargar el pronarea.");

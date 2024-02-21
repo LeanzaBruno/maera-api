@@ -1,19 +1,21 @@
 package dev.kertz.decode;
 
-import dev.kertz.dto.WeatherDescriptor;
-import dev.kertz.dto.WeatherPhenomena;
+import dev.kertz.enums.WeatherDescriptor;
+import dev.kertz.enums.WeatherPhenomena;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-public class WeatherPhenomenaDecoder extends Decoder{
+public class WeatherPhenomenaDecoder extends Decoder {
 
     WeatherPhenomenaDecoder(){
         super("(?<qualifier>[+-]|VC)?(?<descriptor>\\w{2})?(?<phenomena>DZ|RA|SN|PL|GR|GS|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)");
     }
 
     @Override
-    public String decode(String section) {
+    public Optional<Decodification> decode(String section, String nextSection) {
         Matcher matcher = super.getMatcher(section);
 
         if (matcher.find()) {
@@ -38,8 +40,8 @@ public class WeatherPhenomenaDecoder extends Decoder{
                 default -> null;
             };
 
-            return wfWrapper.phenomena + (wdWrapper.descriptor != null ? wdWrapper.descriptor : "") + " " + qualifier;
+            return Optional.of( new Decodification(List.of(section), wfWrapper.phenomena + (wdWrapper.descriptor != null ? wdWrapper.descriptor : "") + " " + qualifier));
         }
-        return null;
+        return Optional.empty();
     }
 }

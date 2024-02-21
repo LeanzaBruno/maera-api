@@ -1,13 +1,11 @@
 package dev.kertz.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 // TODO agregar aeropuerto?
 // TODO guardar tmb la fecha si quiero guardarlo en una base de datos
+@Entity
 @Data
 public class Metar {
     @Id
@@ -16,6 +14,7 @@ public class Metar {
     private final String raw;
 
     @ManyToOne
-    private Airport airport;
+    @JoinColumn(name="airport_code", nullable = false)
+    private final Airport airport;
 }
 

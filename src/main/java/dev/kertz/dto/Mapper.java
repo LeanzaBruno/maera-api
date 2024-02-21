@@ -36,47 +36,6 @@ public class Mapper {
     private static final String REGEX_FORECAST = "FCST\\s?:?\\s?(?<forecast>.*)";
 
 
-    public static TafDTO toDTO(Taf taf){
-        final String raw = taf.getRaw();
-        TafDTO dto = new TafDTO();
-        Pattern pattern = Pattern.compile(
-                REGEX_AIRPORT +
-                    METAR_PUBLICATION +
-                    REGEX_VALID_PERIOD +
-                    REGEX_WIND +
-                    METAR_CURRENT_CONDITIONS +
-                    REGEX_MAX_TEMP +
-                    REGEX_MIN_TEMP +
-                    REGEX_EXPECTED_CONDITIONS);
-        Matcher matcher = pattern.matcher( raw );
-
-        if( matcher.find() ){
-            dto.setRaw(raw);
-            dto.setAirportCode( matcher.group("airport") );
-            dto.setPublicationDate( matcher.group("publicationDate") );
-            dto.setPublicationTime( matcher.group("publicationTime") );
-            dto.setValidFromDate( matcher.group("validFromDate") );
-            dto.setValidFromTime( matcher.group("validFromTime") );
-            dto.setValidToDate( matcher.group("validToDate") );
-            dto.setValidToTime( matcher.group("validToTime") );
-            dto.setWindDirection( matcher.group("windDirection") );
-            dto.setWindIntensity( matcher.group("windIntensity") );
-            dto.setWindGusts( matcher.group("windGusts") );
-
-            dto.setCurrentConditions( matcher.group("currentConditions"));
-
-            dto.setMaxTemperature( matcher.group("maxTemp") );
-            dto.setMaxTemperatureDate( matcher.group("maxTempDate") );
-            dto.setMaxTemperatureTime( matcher.group("maxTempTime") );
-            dto.setMinTemperature( matcher.group("minTemp") );
-            dto.setMinTemperatureDate( matcher.group("minTempDate") );
-            dto.setMinTemperatureTime( matcher.group("minTempTime") );
-            dto.setExpectedConditions( matcher.group("expectedConditions"));
-        }
-        return dto;
-    }
-
-
     public static PronareaDTO toDTO(Pronarea pronarea){
         String raw = pronarea.getRaw();
         PronareaDTO dto = new PronareaDTO();

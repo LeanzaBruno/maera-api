@@ -1,4 +1,4 @@
-package dev.kertz.dto;
+package dev.kertz.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

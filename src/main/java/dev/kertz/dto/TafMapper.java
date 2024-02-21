@@ -1,20 +1,19 @@
 package dev.kertz.dto;
 
-import dev.kertz.decode.Decodification;
-import dev.kertz.decode.MetarDecoders;
-import dev.kertz.model.Metar;
+import dev.kertz.decode.*;
+import dev.kertz.model.Taf;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MetarMapper {
+public class TafMapper {
 
-    public static MetarDTO toDTO(Metar metar){
-        final String raw = metar.getRaw();
+    public static ReportDTO toDTO(Taf taf){
+        final String raw = taf.getRaw();
 
         List<Decodification> decodifications = new ArrayList<>();
         String [] list = raw.split(" ");
         for(int index = 0 ; index < list.length ; ++index){
-            for(var decoder : MetarDecoders.list){
+            for(var decoder : TafDecoders.list){
                 String section = list[index];
                 String nextSection = index+1 < list.length ? list[index+1] : null;
                 var wrapper = new Object(){ boolean decoded = false; int extraSteps = 0; };
@@ -30,7 +29,6 @@ public class MetarMapper {
                 }
             }
         }
-        return new MetarDTO(raw, decodifications);
+        return new ReportDTO(raw, decodifications);
     }
-
 }
