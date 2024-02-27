@@ -1,23 +1,23 @@
 package dev.kertz.decode;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import static java.lang.Integer.parseInt;
 
-public class PrecipitationDecoder extends Decoder {
+public class PrecipitationDecoder extends SingleSectionDecoder {
 
-    PrecipitationDecoder(){
+    public PrecipitationDecoder(){
         super("(?<=PP)(\\d{3}|\\/\\/\\/)");
     }
 
     @Override
-    public Optional<Decodification> decode(String section, String nextSection) {
-        Matcher matcher = super.getMatcher(section);
+    public boolean decode(String[] rawSections) {
+        Matcher matcher = super.getMatcher(rawSections[0]);
         if(matcher.find()){
             String pp = matcher.group();
-            return Optional.of(new Decodification(List.of(section), pp.equals("///") ? "El sensor se encuentra fuera de servicio." : "La precipitación en la última hora fue de " + parseInt(pp) + " mm."));
+            setDecoding(new Decoding(List.of(rawSections[0]), pp.equals("///") ? "El sensor se encuentra fuera de servicio." : "La precipitación en la última hora fue de " + parseInt(pp) + " mm."));
+            return true;
         }
-        return Optional.empty();
+        return false;
     }
 }

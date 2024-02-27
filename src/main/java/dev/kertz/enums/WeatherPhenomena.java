@@ -21,7 +21,8 @@ public enum WeatherPhenomena{
     SQ("Turbonadas"),
     FC("Nube con forma de embudo"),
     SS("Tempestad de arena"),
-    DS("Tempestad de polvo");
+    DS("Tempestad de polvo"),
+    TS("Tormenta");
 
     private final String meaning;
 

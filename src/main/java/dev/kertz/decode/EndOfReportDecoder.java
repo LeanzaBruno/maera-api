@@ -1,18 +1,38 @@
 package dev.kertz.decode;
 
+import lombok.Getter;
+
 import java.util.List;
-import java.util.Optional;
+import java.util.regex.Matcher;
 
-public class EndOfReportDecoder extends Decoder {
+public class EndOfReportDecoder extends SingleSectionDecoder implements NotReusable{
 
-    EndOfReportDecoder(){
+    @Getter
+    boolean used = false;
+
+    public EndOfReportDecoder(){
         super("=");
     }
 
     @Override
-    public Optional<Decodification> decode(String section, String nextSection) {
-        return super.getMatcher(section).find()
-                ? Optional.of(new Decodification(List.of(section), "Fin del reporte"))
-                : Optional.empty();
+    public boolean decode(String[] sections) {
+        Matcher matcher = super.getMatcher(sections[0]);
+        if(matcher.find()){
+            setDecoding(new Decoding(List.of(sections[0]), "Fin del reporte"));
+            return true;
+        }
+        return false;
+    }
+
+    public void markAsUsed(){
+        used = true;
+    }
+
+    public void markAsUnused(){
+        used = false;
+    }
+
+    public boolean wasUsed(){
+        return used;
     }
 }

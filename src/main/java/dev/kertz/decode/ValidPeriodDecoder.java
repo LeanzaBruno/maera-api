@@ -1,19 +1,23 @@
 package dev.kertz.decode;
 
+import lombok.Getter;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class ValidPeriodDecoder extends Decoder {
+@Getter
+public class ValidPeriodDecoder extends SingleSectionDecoder implements NotReusable {
 
-    ValidPeriodDecoder(){
+    private boolean used = false;
+
+    public ValidPeriodDecoder(){
         super("(?<fromDate>\\d{2})(?<fromTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
     }
 
 
     @Override
-    public Optional<Decodification> decode(String section, String nextSection) {
-        Matcher matcher = super.getMatcher(section);
+    public boolean decode(String[] rawSections) {
+        Matcher matcher = super.getMatcher(rawSections[0]);
 
         if (matcher.find()) {
             String fromDate = matcher.group("fromDate");
@@ -21,8 +25,21 @@ public class ValidPeriodDecoder extends Decoder {
             String toDate = matcher.group("toDate");
             String toTime = matcher.group("toTime") + ":00 UTC";
 
-            return Optional.of(new Decodification(List.of(section), "El reporte tiene período de validez desde la hora " + fromTime + " del día " + fromDate + ", hasta la hora " + toTime + " del día " + toDate + "."));
+            setDecoding(new Decoding(List.of(rawSections[0]), "El reporte tiene período de validez desde la hora " + fromTime + " del día " + fromDate + ", hasta la hora " + toTime + " del día " + toDate + "."));
+            return true;
         }
-        return Optional.empty();
+        return false;
+    }
+
+    public void markAsUsed(){
+        used = true;
+    }
+
+    public boolean wasUsed(){
+        return used;
+    }
+
+    public void markAsUnused(){
+        used = false;
     }
 }

@@ -1,22 +1,20 @@
 package dev.kertz.decode;
 
 import dev.kertz.enums.CloudCoverType;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 import static java.lang.Integer.parseInt;
 
-public class CloudCoverDecoder extends Decoder {
+public class CloudCoverDecoder extends SingleSectionDecoder {
 
-    CloudCoverDecoder(){
+    public CloudCoverDecoder(){
         super("(?<cover>FEW|BKN|SCT|OVC)(?<altitude>\\d{3})(?<type>CB|TCU)?");
     }
 
     @Override
-    public Optional<Decodification> decode(String section, String nextSection) {
-        Matcher matcher = super.getMatcher(section);
+    public boolean decode(String[] rawSections) {
+        Matcher matcher = super.getMatcher(rawSections[0]);
 
         if (matcher.find()) {
             var wrapper = new Object(){ String cover; };
@@ -26,10 +24,17 @@ public class CloudCoverDecoder extends Decoder {
                     .ifPresent( cloud -> wrapper.cover = cloud.getMeaning() );
 
             int altitude = parseInt( matcher.group("altitude") ) * 100;
-            String type = matcher.group("type");
+            String type = switch( matcher.group("type") ){
+                case "CB" -> "cúmulonimbus";
+                case "TCU" -> "torrecúmulus";
+                case null, default -> null;
+            };
 
-            return Optional.of( new Decodification(List.of(section), wrapper.cover + (type != null ? " de tipo " + type : "") + " con base a " + altitude + " ft sobre el aeropuerto."));
+            // TODO caso TSRA tormenta con lluvia
+
+            setDecoding( new Decoding(List.of(rawSections[0]), wrapper.cover + (type != null ? " de tipo " + type : "") + " con base a " + altitude + " ft sobre el aeropuerto."));
+            return true;
         }
-        return Optional.empty();
+        return false;
     }
 }

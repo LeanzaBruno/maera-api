@@ -1,6 +1,6 @@
 package dev.kertz.dto;
-import dev.kertz.decode.Decodification;
+import dev.kertz.decode.Decoding;
 
 import java.util.List;
 
-public record MetarDTO(String raw, List<Decodification> sections) { }
+public record MetarDTO(String raw, List<Decoding> sections) { }

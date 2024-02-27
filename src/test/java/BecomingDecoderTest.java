@@ -1,9 +1,6 @@
 import dev.kertz.decode.BecomingDecoder;
-import dev.kertz.decode.Decodification;
+import dev.kertz.decode.Decoding;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BecomingDecoderTest {
@@ -11,30 +8,30 @@ public class BecomingDecoderTest {
     @Test
     void assertIsPresent(){
         BecomingDecoder decoder = new BecomingDecoder();
-        Optional<Decodification> decodification =  decoder.decode("BECMG", "18010KT");
-        assertTrue(decodification.isPresent());
+        assertTrue(decoder.decode("BECMG 18010KT".split(" ")));
     }
 
     @Test
     void assertIsNotPresent(){
         BecomingDecoder decoder = new BecomingDecoder();
-        Optional<Decodification> decodification =  decoder.decode("METAR", "SAAV");
-        assertFalse(decodification.isPresent());
+        assertFalse(decoder.decode("METAR SAAV".split(" ")));
     }
 
     @Test
     void assertDecodedSectionsAreOne(){
         BecomingDecoder decoder = new BecomingDecoder();
-        Decodification decodification =  decoder.decode("BECMG", "18010KT").get();
-        assertEquals(1, decodification.getDecodedSections() );
-        System.out.println(decodification);
+        assertTrue( decoder.decode("BECMG 18010KT".split(" ")));
+        Decoding decoding = decoder.getDecoding();
+        assertEquals(1, decoding.getDecodedSections() );
+        System.out.println(decoding);
     }
 
     @Test
     void assertDecodedSectionsAreTwo(){
         BecomingDecoder decoder = new BecomingDecoder();
-        Decodification decodification =  decoder.decode("BECMG", "2117/2120").get();
-        assertEquals(2, decodification.getDecodedSections() );
-        System.out.println(decodification);
+        assertTrue( decoder.decode("BECMG 2117/2120".split(" ")));
+        Decoding decoding = decoder.getDecoding();
+        assertEquals(2, decoding.getDecodedSections() );
+        System.out.println(decoding);
     }
 }

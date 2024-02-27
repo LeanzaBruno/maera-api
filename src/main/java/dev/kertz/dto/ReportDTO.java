@@ -1,7 +1,7 @@
 package dev.kertz.dto;
 
-import dev.kertz.decode.Decodification;
+import dev.kertz.decode.Decoding;
 
 import java.util.List;
 
-public record ReportDTO(String raw, List<Decodification> decodifications) { }
+public record ReportDTO(String raw, List<Decoding> decodings) { }

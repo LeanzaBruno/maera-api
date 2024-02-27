@@ -1,15 +1,16 @@
 package dev.kertz.decode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 @JsonPropertyOrder({"section", "decodification"})
-public class Decodification{
+public class Decoding {
     private final List<String> sections;
 
     private final String decodification;
 
-    Decodification(List<String> sections, String decodification){
+    Decoding(List<String> sections, String decodification){
         this.sections = sections;
         this.decodification = decodification;
     }
@@ -21,7 +22,7 @@ public class Decodification{
         return builder.toString();
     }
 
-    public String getDecodification(){
+    public String getDecoding(){
         return decodification;
     }
 

@@ -2,46 +2,47 @@ package dev.kertz.decode;
 
 import dev.kertz.enums.WeatherDescriptor;
 import dev.kertz.enums.WeatherPhenomena;
-
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-public class WeatherPhenomenaDecoder extends Decoder {
+// TODO mejorar
+public class WeatherPhenomenaDecoder extends SingleSectionDecoder {
 
-    WeatherPhenomenaDecoder(){
-        super("(?<qualifier>[+-]|VC)?(?<descriptor>\\w{2})?(?<phenomena>DZ|RA|SN|PL|GR|GS|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)");
+    public WeatherPhenomenaDecoder(){
+        super("(?<qualifier>[+-]|VC)?(?<descriptor>\\w{2})?(?<phenomena>DZ|RA|SN|PL|GR|GS|BR|FG|FU|VA|DU|TS|SA|HZ|PO|SQ|FC|SS|DS)");
     }
 
     @Override
-    public Optional<Decodification> decode(String section, String nextSection) {
-        Matcher matcher = super.getMatcher(section);
+    public boolean decode(String[] rawSections) {
+        Matcher matcher = super.getMatcher(rawSections[0]);
 
         if (matcher.find()) {
-            var wfWrapper = new Object(){ String phenomena; };
+            AtomicReference<String> phenomena = new AtomicReference<>();
             Stream.of( WeatherPhenomena.values() )
                     .filter( wf -> wf.name().equals(matcher.group("phenomena")))
                     .findFirst()
-                    .ifPresent( wf -> wfWrapper.phenomena = wf.getMeaning() );
+                    .ifPresent( wf -> phenomena.set(wf.getMeaning()) );
 
 
-            var wdWrapper = new Object(){ String descriptor; };
+            AtomicReference<String> descriptor = new AtomicReference<>();
             Stream.of(WeatherDescriptor.values() )
                     .filter( wd -> wd.name().equals(matcher.group("descriptor")) )
                     .findFirst()
-                    .ifPresent( wd -> wdWrapper.descriptor = wd.getMeaning() );
+                    .ifPresent( wd -> descriptor.set(wd.getMeaning()) );
 
             String qualifier = switch( matcher.group("qualifier") ){
-                case "-" -> "con intensidad leve.";
-                case "+" -> "con intensidad fuerte.";
+                case "-" -> "con leve intensidad.";
+                case "+" -> "con fuerte intensidad.";
                 case "VC" -> "en las proximidades.";
-                case null -> "con intensidad moderada.";
+                case null -> "con moderada intensidad.";
                 default -> null;
             };
-
-            return Optional.of( new Decodification(List.of(section), wfWrapper.phenomena + (wdWrapper.descriptor != null ? wdWrapper.descriptor : "") + " " + qualifier));
+            String decoding = phenomena.get() + ' ' + (descriptor.get() != null ? descriptor.get() + ' ' : "") + qualifier;
+            setDecoding( new Decoding(List.of(rawSections[0]), decoding));
+            return true;
         }
-        return Optional.empty();
+        return false;
     }
 }
