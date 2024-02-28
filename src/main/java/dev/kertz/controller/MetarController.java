@@ -1,8 +1,8 @@
 package dev.kertz.controller;
 
 import java.util.List;
-import dev.kertz.dto.MetarDTO;
 import dev.kertz.dto.MetarMapper;
+import dev.kertz.dto.ReportDTO;
 import dev.kertz.model.Metar;
 import org.springframework.web.bind.annotation.*;
 import dev.kertz.core.ReportDownloader;
@@ -29,7 +29,7 @@ public class MetarController {
 	}
 
 	@GetMapping("/airports/{icao}")
-	public MetarDTO getMetar(@PathVariable String icao){
+	public ReportDTO getMetar(@PathVariable String icao){
 		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
 		Metar metar = ReportDownloader.getMetars( List.of(airport) ).getFirst();
 		return MetarMapper.toDTO(metar);
@@ -37,7 +37,7 @@ public class MetarController {
 
 	
 	@GetMapping("/firs/{fir}")
-	public List<MetarDTO> getMetarsByFir(@PathVariable String fir){
+	public List<ReportDTO> getMetarsByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);
 		List<Metar> metars = ReportDownloader.getMetars(airports);

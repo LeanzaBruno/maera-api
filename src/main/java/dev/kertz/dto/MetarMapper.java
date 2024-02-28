@@ -28,7 +28,7 @@ public class MetarMapper {
             new BecomingDecoder(),
             new TemporaryDecoder()
     );
-    public static MetarDTO toDTO(Metar metar) {
+    public static ReportDTO toDTO(Metar metar) {
         resetDecoders();
         final String raw = metar.getRaw();
 
@@ -49,7 +49,7 @@ public class MetarMapper {
                             ((NotReusable)decoder).markAsUsed();
                     }, index::incrementAndGet );
         }
-        return new MetarDTO(raw, decodings);
+        return new ReportDTO(raw, decodings);
     }
 
     private static void resetDecoders(){
