@@ -38,7 +38,7 @@ public class TafController {
 		return TafMapper.toDTO(taf);
 	}
 	
-	@GetMapping("/fir/{fir}")
+	@GetMapping("/firs/{fir}")
 	public List<ReportDTO> getTafByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);

@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class TemporaryDecoderTest {
 
     @Test
-    void assertIsPresent(){
+    void assertDecodingsAreCorrect(){
         TemporaryDecoder decoder = new TemporaryDecoder();
         assertTrue(decoder.decode("TEMPO 1818/2323 18010KT".split(" ")));
         System.out.println(decoder.getDecoding().getDecoding());
 
         assertTrue(decoder.decode("PROB40 TEMPO 1818/1823 18010KT".split(" ")));
+        System.out.println(decoder.getDecoding().getDecoding());
+
+        assertTrue(decoder.decode("PROB30 1818/2323 18010KT".split(" ")));
         System.out.println(decoder.getDecoding().getDecoding());
 
         assertTrue(decoder.decode("PROB40 TEMPO 1818/1823 18010KT".split(" ")));

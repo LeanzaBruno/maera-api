@@ -7,56 +7,47 @@ import static java.lang.Integer.parseInt;
 
 public class TemporaryDecoder extends Decoder {
 
-    //private final static Pattern PATTERN = Pattern.compile("(PROB(?<probability>\\d{2}) )?TEMPO (?<fmDate>\\d{2})(?<fmTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
-    private static final Pattern PROBABILITY_PATTERN = Pattern.compile("PROB(?<prob>\\d{2})");
-    private static final Pattern TEMPO_PATTERN = Pattern.compile("TEMPO");
-    private static final Pattern PERIOD_PATTERN = Pattern.compile("(?<fmDate>\\d{2})(?<fmTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
+    private final static Pattern PROB_TEMPO_ARREGMENT = Pattern.compile("PROB(?<probability>\\d{2}) TEMPO (?<fmDate>\\d{2})(?<fmTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
+    private final static Pattern TEMPO_ARREGMENT = Pattern.compile("TEMPO (?<fmDate>\\d{2})(?<fmTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
+    private final static Pattern PROB_ARREGMENT = Pattern.compile("PROB(?<probability>\\d{2}) (?<fmDate>\\d{2})(?<fmTime>\\d{2})/(?<toDate>\\d{2})(?<toTime>\\d{2})");
 
     @Override
     public boolean decode(String[] rawSections) {
         if( rawSections.length < 3 )
             return false;
 
-        Matcher probMatcher = PROBABILITY_PATTERN.matcher(rawSections[0]);
-        if( probMatcher.find()){
-            int probability = parseInt( probMatcher.group("prob") );
-
-            Matcher tempoMatcher = TEMPO_PATTERN.matcher(rawSections[1]);
-            if( tempoMatcher.find()){
-                Matcher periodMatcher = PERIOD_PATTERN.matcher(rawSections[2]);
-                if( periodMatcher.find() ){
-                    int fmDate = parseInt( periodMatcher.group("fmDate"));
-                    String fmTime = periodMatcher.group("fmTime");
-                    int toDate = parseInt( periodMatcher.group("toDate") );
-                    String toTime = periodMatcher.group("toTime");
-
-                    setDecoding(
-                            new Decoding(
-                                    List.of(rawSections[0], rawSections[1], rawSections[2]),
-                                    "Cambio temporal de las condiciones que puede ocurrir entre las " + fmTime + ":00 UTC del día " + fmDate + " hasta las " + toTime + ":00 UTC del día " + toDate + ", con una probabilidad del " + probability + "%."
-                            )
-                    );
-                    return true;
-                }
-            }
+        String target = rawSections[0] + ' ' + rawSections[1] + ' ' + rawSections[2];
+        String decoding = null;
+        Matcher matcher = PROB_TEMPO_ARREGMENT.matcher(target);
+        if( matcher.find()){
+            int probability = parseInt( matcher.group("probability") );
+            decoding = "Cambio temporal de las condiciones que puede ocurrir " + makePeriodString(matcher) + ", con una probabilidad del " + probability + "%.";
+            setDecoding(new Decoding(List.of(rawSections[0], rawSections[1], rawSections[2]), decoding));
+            return true;
         }
+
+        matcher = TEMPO_ARREGMENT.matcher(target);
+        if(matcher.find())
+            decoding = "Cambio temporal de las condiciones que puede ocurrir " + makePeriodString(matcher) + ".";
         else{
-            Matcher tempoMatcher = TEMPO_PATTERN.matcher(rawSections[0]);
-            if( tempoMatcher.find()){
-                Matcher periodMatcher = PERIOD_PATTERN.matcher(rawSections[1]);
-                if(periodMatcher.find()){
-                    int fmDate = parseInt( periodMatcher.group("fmDate"));
-                    String fmTime = periodMatcher.group("fmTime");
-                    int toDate = parseInt( periodMatcher.group("toDate") );
-                    String toTime = periodMatcher.group("toTime");
-
-                    setDecoding(new Decoding(
-                            List.of(rawSections[0], rawSections[1]),
-                            "Cambio temporal de las condiciones que puede ocurrir entre las " + fmTime + ":00 UTC del día " + fmDate + " hasta las " + toTime + ":00 UTC del día " + toDate + '.'));
-                    return true;
-                }
-            }
+            matcher = PROB_ARREGMENT.matcher(target);
+            if(matcher.find())
+                decoding = "Probabilidad del "+ parseInt(matcher.group("probability")) + "% de que ocurra un cambio en las condiciones " + makePeriodString(matcher) + '.';
         }
+
+        if(decoding != null){
+            setDecoding(new Decoding(List.of(rawSections[0], rawSections[1]), decoding));
+            return true;
+        }
+
         return false;
+    }
+
+    private String makePeriodString(Matcher matcher){
+        int fmDate = parseInt( matcher.group("fmDate"));
+        String fmTime = matcher.group("fmTime");
+        int toDate = parseInt( matcher.group("toDate") );
+        String toTime = matcher.group("toTime");
+        return "entre las "+ fmTime + ":00 UTC del día " + fmDate + " hasta las " + toTime + ":00 UTC del día " + toDate;
     }
 }
