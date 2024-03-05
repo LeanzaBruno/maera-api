@@ -28,7 +28,7 @@ public class MetarController {
 		this.firRepository = firRepository;
 	}
 
-	@GetMapping("/airports/{icao}")
+	@GetMapping("/{icao}")
 	public ReportDTO getMetar(@PathVariable String icao){
 		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
 		Metar metar = ReportDownloader.getMetars( List.of(airport) ).getFirst();
@@ -36,7 +36,7 @@ public class MetarController {
 	}
 
 	
-	@GetMapping("/firs/{fir}")
+	@GetMapping("/fir/{fir}")
 	public List<ReportDTO> getMetarsByFir(@PathVariable String fir){
 		Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir) );
 		List<Airport> airports = airportRepository.findByFir(firObj);

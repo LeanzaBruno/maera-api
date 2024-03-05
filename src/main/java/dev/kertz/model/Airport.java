@@ -3,10 +3,6 @@ package dev.kertz.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.ArrayList;
-import java.util.List;
-
-// TODO Agergar localidad
 
 @Entity
 @Setter
@@ -16,27 +12,41 @@ public class Airport {
 	@Column(length = 4)
 	private String ICAO;
 
-	@Column(length = 3)
+	@Column(length = 4)
 	private String IATA;
 
+	@Column(length = 3, nullable = false)
+	private String anac;
+
+	private int WMO;
+
+	@Column(nullable = false)
 	private String name;
-	
+
+	@Column(nullable = false)
+	private String city;
+
+	private boolean hasTAF;
+
+	private int elevation;
+
+	private float latitude;
+
+	private float longitude;
+
+	@ManyToOne
+	@JoinColumn(name = "province", nullable = false)
+	private Province province;
+
 	@ManyToOne
 	@JoinColumn(name = "fir")
 	private Fir fir;
 
-	@OneToMany(mappedBy = "airport")
-	private List<Metar> metars = new ArrayList<>(10);
-
-	@OneToMany(mappedBy = "airport")
-	private List<Taf> tafs = new ArrayList<>(10);
-
-	private boolean hasTAF;
-
-	private boolean hasPRONAREA;
-	
 	public String getFir() {
 		return fir.getName();
 	}
 
+	public String getProvince(){
+		return province.getName();
+	}
 }

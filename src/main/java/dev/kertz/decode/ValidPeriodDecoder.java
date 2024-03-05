@@ -25,7 +25,7 @@ public class ValidPeriodDecoder extends SingleSectionDecoder implements NotReusa
             String toDate = matcher.group("toDate");
             String toTime = matcher.group("toTime") + ":00 UTC";
 
-            setDecoding(new Decoding(List.of(rawSections[0]), "El reporte tiene período de validez desde la hora " + fromTime + " del día " + fromDate + ", hasta la hora " + toTime + " del día " + toDate + "."));
+            setDecoding(new Decoding(List.of(rawSections[0]), "Período de validez desde la hora " + fromTime + " del día " + fromDate + ", hasta la hora " + toTime + " del día " + toDate + "."));
             return true;
         }
         return false;

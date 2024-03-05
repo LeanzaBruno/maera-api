@@ -61,7 +61,7 @@ public final class ReportDownloader {
 
 	public static Pronarea getPronarea(Fir fir){
 		String url = WeatherBriefing.PRONAREA.url;
-		url = url.replace("??", String.valueOf(fir.getCode()) );
+		url = url.replace("??", String.valueOf(fir.getWmo()) );
 		Pronarea pronarea = new Pronarea();
 
 		try {

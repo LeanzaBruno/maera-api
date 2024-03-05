@@ -32,6 +32,6 @@ public class BecomingDecoder extends Decoder {
         String fmTime = matcher.group("fmTime");
         int toDate = parseInt( matcher.group("toDate") );
         String toTime = matcher.group("toTime");
-        return "Cambio de las condiciones entre las " + fmTime + ":00 UTC del día " + fmDate + ", y las " + toTime + ":00 UTC del día " + toDate + ".";
+        return "Cambio de las condiciones entre las " + fmTime + ":00 UTC del día " + fmDate + " y las " + toTime + ":00 UTC del día " + toDate + ".";
     }
 }

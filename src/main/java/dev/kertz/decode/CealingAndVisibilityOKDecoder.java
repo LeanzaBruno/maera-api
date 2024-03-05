@@ -15,7 +15,7 @@ public class CealingAndVisibilityOKDecoder extends SingleSectionDecoder {
         if( matcher.find() ){
             setDecoding(new Decoding(
                     List.of(sections[0]),
-                    "Visibilidad mayor a 10 km, sin nubes por debajo de 5000 ft sin CB ni TCU, y no hay fenómenos meteorólogicos significativos."));
+                    "Visibilidad mayor a 10 km, sin nubes por debajo de 5000 ft, sin CB ni TCU, y no hay fenómenos meteorólogicos significativos."));
             return true;
         }
         return false;

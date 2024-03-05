@@ -1,6 +1,11 @@
 package dev.kertz.controller;
 
 import java.util.List;
+import dev.kertz.dto.AirportDTO;
+import dev.kertz.dto.AirportMapper;
+import dev.kertz.model.Runway;
+import dev.kertz.repository.RunwayRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,20 +18,22 @@ import dev.kertz.repository.AirportRepository;
 @RequestMapping(path = "/airports", produces = "application/json")
 class AirportController{
 
-	private AirportRepository repository;
-	
-	public AirportController(AirportRepository repository) {
-		this.repository = repository;
-	}
-	
+	@Autowired
+	private AirportRepository airportRepository;
+
+	@Autowired
+	private RunwayRepository runwayRepository;
+
 	@GetMapping
 	public List<Airport> getAirports(){
-		return repository.findAll();
+		return airportRepository.findAll();
 	}
 	
 	@GetMapping("/{code}")
-	public Airport getAirport(@PathVariable String code) {
-		return repository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
+	public AirportDTO getAirport(@PathVariable String code) {
+		Airport airport = airportRepository.findByICAOIgnoreCase(code).orElseThrow( () -> new AirportNotFoundException(code));
+		List<Runway> runways = runwayRepository.findByAirport(airport);
+		return AirportMapper.toDTO(airport, runways);
 	}
 
 }
