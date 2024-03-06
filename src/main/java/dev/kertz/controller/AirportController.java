@@ -25,8 +25,9 @@ class AirportController{
 	private RunwayRepository runwayRepository;
 
 	@GetMapping
-	public List<Airport> getAirports(){
-		return airportRepository.findAll();
+	public List<AirportDTO> getAirports(){
+		List<Airport> airports = airportRepository.findAll();
+		return airports.stream().map( airport -> AirportMapper.toDTO(airport, runwayRepository.findByAirport(airport))).toList();
 	}
 	
 	@GetMapping("/{code}")
@@ -35,5 +36,4 @@ class AirportController{
 		List<Runway> runways = runwayRepository.findByAirport(airport);
 		return AirportMapper.toDTO(airport, runways);
 	}
-
 }
