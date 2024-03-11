@@ -1,29 +1,21 @@
 package dev.kertz.dto;
-import dev.kertz.model.Metar;
-import dev.kertz.model.Pronarea;
-import dev.kertz.model.Taf;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import dev.kertz.decode.Decoder;
+import dev.kertz.decode.Decoding;
+import dev.kertz.decode.ReportTypeDecoder;
+import dev.kertz.model.Report;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.toUnsignedString;
 
-public class Mapper {
-    private static final String REGEX_AIRPORT = "(?<airport>\\w{4}) ";
-    private static final String REGEX_VALID_PERIOD = "(?<validFromDate>\\d{2})(?<validFromTime>\\d{2})/(?<validToDate>\\d{2})(?<validToTime>\\d{2})\\s";
-    private static final String METAR_PUBLICATION = "(?<publicationDate>\\d{2})(?<publicationTime>\\d{4})Z ";
-    private static final String METAR_CURRENT_CONDITIONS = "(?<airport>\\w{4}) (?<publicationDate>\\d{2})(?<publicationTime>\\d{4})Z (?<windDirection>\\d{3})(?<windIntensity>\\d{2})(G(?<windGusts>.*))?KT (?<otherData>.*) (?<temperature>\\d{2})/(?<dewPoint>\\d{2}) Q(?<qnh>\\d{4}) (?<expected>.*) RMK (?<remarks>.*) =";
-    private static final String REGEX_WIND = "(?<windDirection>\\d{3})(?<windIntensity>\\d{2})(G(?<windGusts>.*))?KT ";
-    private static final String REGEX_WIND_VARIATION = "((?<windVariationFrom>\\d{3})V(?<windVariationTo>\\d{3}))?\\s";
-    private static final String REGEX_REMARKS = "RMK(?<remarks>.*) =";
-    private static final String REGEX_MAX_TEMP = "TX(?<maxTemp>\\d{2})/(?<maxTempDate>\\d{2})(?<maxTempTime>\\d{2})Z\\s";
-    private static final String REGEX_MIN_TEMP = "TN(?<minTemp>\\d{2})/(?<minTempDate>\\d{2})(?<minTempTime>\\d{2})Z\\s";
-    private static final String REGEX_EXPECTED_CONDITIONS = "(?<expectedConditions>.*)\\s=";
-    private static final String REGEX_CAVOK = "CAVOK";
+public class PronareaMapper {
+
+    private static final List<Decoder> decoders = List.of(
+            new ReportTypeDecoder()
+    );
     private static final String REGEX_PRONAREA_FOREWORD = "FIR (?<fir>\\w+) VALIDEZ (?<from>\\d{2})(?<to>\\d{2}).* MAPA (?<mapTime>\\d{4})";
     private static final String REGEX_SIGFENOM = ".*SIGFENOM\\s?:?\\s?(?<sigfenom>.*)";
     private static final String REGEX_JETSTREAM = "CORRIENTE EN CHORRO\\s?:?\\s?(?<jetStream>.*)";
@@ -36,24 +28,13 @@ public class Mapper {
     private static final String REGEX_FORECAST = "FCST\\s?:?\\s?(?<forecast>.*)";
 
 
-    public static PronareaDTO toDTO(Pronarea pronarea){
+    public static ReportDTO toDTO(Report pronarea){
         String raw = pronarea.getRaw();
-        PronareaDTO dto = new PronareaDTO();
-
-        Pattern pattern = Pattern.compile(
-            REGEX_PRONAREA_FOREWORD +
-            REGEX_SIGFENOM +
-            REGEX_JETSTREAM +
-            REGEX_TURBULENCE +
-            REGEX_FREEZING +
-            REGEX_ISOTHERM +
-            REGEX_TROPOPAUSE +
-            REGEX_WIND_TEMP +
-            REGEX_FORECAST);
-        Matcher matcher = pattern.matcher( raw );
-
+        /**
+         * TODO under work
+         List<Decoding> decodings = new LinkedList<>();
+         Matcher matcher = pattern.matcher( raw );
         if( matcher.find() ) {
-            dto.setRaw(pronarea.getRaw());
             dto.setFirIdentifier( matcher.group("fir") );
             dto.setValidTimeFrom( matcher.group("from") );
             dto.setValidTimeTo( matcher.group("to") );
@@ -67,7 +48,8 @@ public class Mapper {
             dto.setWindAndTemp( matcher.group("windAndTemp") );
             dto.setForecast( matcher.group("forecast") );
         }
-        return dto;
+         */
+        return new ReportDTO(raw, new LinkedList<>());
     }
 
 

@@ -1,7 +1,7 @@
 package dev.kertz.dto;
 
 import dev.kertz.decode.*;
-import dev.kertz.model.Taf;
+import dev.kertz.model.Report;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ public class TafMapper {
             new FromDecoder()
     );
 
-    public static ReportDTO toDTO(Taf taf){
+    public static ReportDTO toDTO(Report taf){
         resetDecoders();
         final String raw = taf.getRaw();
 
@@ -43,7 +43,11 @@ public class TafMapper {
             String[] undecodedSections = Arrays.copyOfRange(list, index.get(), list.length);
             decoders.stream()
                     .filter(decoder -> isReusable(decoder) || isNotReusableAndNotUsed(decoder) )
-                    .filter(decoder -> decoder.decode(undecodedSections) )
+                    .filter(decoder -> {
+                        if( decoder instanceof AirportDecoder )
+                            ((AirportDecoder) decoder).setAirport(taf.getAirport());
+                        return decoder.decode(undecodedSections);
+                    } )
                     .findFirst()
                     .ifPresentOrElse(decoder -> {
                         Decoding decoding = decoder.getDecoding();

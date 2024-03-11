@@ -26,7 +26,7 @@ public class Airport {
 	@Column(nullable = false)
 	private String city;
 
-	private boolean hasTAF;
+	private boolean tafStation;
 
 	private int elevation;
 
@@ -41,12 +41,4 @@ public class Airport {
 	@ManyToOne
 	@JoinColumn(name = "fir")
 	private Fir fir;
-
-	public String getFir() {
-		return fir.getName();
-	}
-
-	public String getProvince(){
-		return province.getName();
-	}
 }

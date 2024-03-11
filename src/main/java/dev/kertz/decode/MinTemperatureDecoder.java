@@ -11,7 +11,7 @@ public class MinTemperatureDecoder extends SingleSectionDecoder implements NotRe
     private boolean used = false;
 
     public MinTemperatureDecoder(){
-        super("TX(?<temp>M?\\d{2})/(?<tempDate>\\d{2})(?<tempTime>\\d{2})Z");
+        super("TN(?<temp>M?\\d{2})/(?<tempDate>\\d{2})(?<tempTime>\\d{2})Z");
     }
 
     @Override

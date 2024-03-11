@@ -1,13 +1,15 @@
 package dev.kertz.decode;
 
+import dev.kertz.model.Airport;
 import lombok.Getter;
-
+import lombok.Setter;
 import java.util.List;
 import java.util.regex.Matcher;
 
 public class AirportDecoder extends SingleSectionDecoder implements NotReusable {
 
-    //TODO AirportRepository
+    @Setter
+    private Airport airport;
 
     @Getter
     private boolean used = false;
@@ -20,7 +22,7 @@ public class AirportDecoder extends SingleSectionDecoder implements NotReusable 
     public boolean decode(String[] sections){
         Matcher matcher = super.getMatcher(sections[0]);
         if( matcher.find() ){
-            setDecoding(new Decoding(List.of(sections[0]), "Reporte referido a " + matcher.group() + "."));
+                setDecoding(new Decoding(List.of(sections[0]), "Reporte referido al " + airport.getName() + "."));
             return true;
         }
         return false;

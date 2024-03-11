@@ -1,12 +1,16 @@
 package dev.kertz.dto;
 
 import dev.kertz.decode.*;
-import dev.kertz.model.Metar;
+import dev.kertz.model.Report;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Maps a METAR or SPECI into a ReportDTO.
+ * They both use the same mapper since a SPECI is a special METAR.
+ */
 public class MetarMapper {
 
     private static final List<Decoder> decoders = List.of(
@@ -28,7 +32,14 @@ public class MetarMapper {
             new BecomingDecoder(),
             new TemporaryDecoder()
     );
-    public static ReportDTO toDTO(Metar metar) {
+
+
+    /**
+     * Converts a METAR or SPECI report into a DTO
+     * @param metar the report
+     * @return the dto
+     */
+    public static ReportDTO toDTO(Report metar) {
         resetDecoders();
         final String raw = metar.getRaw();
 
@@ -39,7 +50,11 @@ public class MetarMapper {
             String[] undecodedSections = Arrays.copyOfRange(list, index.get(), list.length);
             decoders.stream()
                     .filter(decoder -> isReusable(decoder) || isNotReusableAndNotUsed(decoder) )
-                    .filter(decoder -> decoder.decode(undecodedSections) )
+                    .filter(decoder -> {
+                        if( decoder instanceof AirportDecoder )
+                            ((AirportDecoder) decoder).setAirport(metar.getAirport());
+                        return decoder.decode(undecodedSections);
+                    } )
                     .findFirst()
                     .ifPresentOrElse(decoder -> {
                         Decoding decoding = decoder.getDecoding();
@@ -52,12 +67,20 @@ public class MetarMapper {
         return new ReportDTO(raw, decodings);
     }
 
+    /**
+     * Method used to reset all not reausable decoders.
+     */
     private static void resetDecoders(){
         decoders.stream()
                 .filter(decoder -> ! isReusable(decoder))
                 .forEach(decoder -> ((NotReusable) decoder).markAsUnused() );
     }
 
+    /**
+     * Checks whether a decoder is reusable or not.
+     * @param decoder the decoder.
+     * @return true if it is reusable, false if not.
+     */
     private static boolean isReusable(Decoder decoder){
         return ! NotReusable.class.isAssignableFrom(decoder.getClass());
     }

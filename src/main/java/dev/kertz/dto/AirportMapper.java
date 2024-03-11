@@ -2,10 +2,11 @@ package dev.kertz.dto;
 
 import dev.kertz.model.Airport;
 import dev.kertz.model.Runway;
-
 import java.util.List;
-import java.util.stream.Stream;
 
+/**
+ * Maps an Airport into a DTO
+ */
 public class AirportMapper {
 
     public static AirportDTO toDTO(Airport airport, List<Runway> runways){
@@ -17,12 +18,12 @@ public class AirportMapper {
                 airport.getWMO(),
                 airport.getName(),
                 airport.getCity(),
-                airport.isHasTAF(),
+                airport.isTafStation(),
                 airport.getElevation(),
                 airport.getLatitude(),
                 airport.getLongitude(),
-                airport.getProvince(),
-                airport.getFir(),
+                airport.getProvince().getName(),
+                airport.getFir().getId(),
                 runwaysDTO
         );
     }

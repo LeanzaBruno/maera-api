@@ -1,41 +1,31 @@
 package dev.kertz.controller;
 
 import dev.kertz.core.ReportDownloader;
-import dev.kertz.dto.Mapper;
-import dev.kertz.dto.PronareaDTO;
+import dev.kertz.dto.PronareaMapper;
+import dev.kertz.dto.ReportDTO;
 import dev.kertz.exception.FirNotFoundException;
+import dev.kertz.exception.ReportNotFoundException;
 import dev.kertz.model.Fir;
-import dev.kertz.model.Pronarea;
+import dev.kertz.model.Report;
 import dev.kertz.repository.FirRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping( path = "/pronarea", produces = "application/json" )
 public class PronareaController {
-    private final FirRepository firRepository;
 
-    PronareaController(FirRepository firRepository){
-        this.firRepository = firRepository;
+    @Autowired
+    private FirRepository firRepository;
+
+
+    @GetMapping("/{firId}")
+    public ReportDTO getPronarea(@PathVariable String firId){
+        Fir fir = firRepository.findByIdIgnoreCase(firId).orElseThrow( () -> new FirNotFoundException(firId));
+        Report pronarea = ReportDownloader.getPronarea(fir).orElseThrow(() -> new ReportNotFoundException("PRONAREA"));
+        return PronareaMapper.toDTO(pronarea);
     }
-
-    @GetMapping("/{fir}")
-    public PronareaDTO getPronarea(@PathVariable String fir){
-        Fir firObj = firRepository.findByIdentifierIgnoreCase(fir).orElseThrow( () -> new FirNotFoundException(fir));
-        Pronarea pronarea = ReportDownloader.getPronarea(firObj);
-        // TODO Guardar pronarea en repositorio pronareaRepository.save(pronarea)
-        return Mapper.toDTO(pronarea);
-    }
-
-    @GetMapping("/all")
-    public List<PronareaDTO> getAll(){
-        List<PronareaDTO> dtos = new ArrayList<>();
-        firRepository.findAll().forEach( fir -> dtos.add(Mapper.toDTO(ReportDownloader.getPronarea(fir))));
-        return dtos;
-    }
-
 }

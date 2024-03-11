@@ -19,6 +19,5 @@ public class Runway {
     private String surface;
 
     @ManyToOne
-    @JoinColumn(name = "airport", nullable = false)
     private Airport airport;
 }
