@@ -35,8 +35,7 @@ INSERT INTO province (name) VALUES
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
 ('SABE', 'AEP', 'AER', 87582, 'Aeroparque Jorge Newbery', 'SAEF', 'CABA', 'CABA', true, 6, -34.5593, -58.414);
-INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES
-('13/31', 2350, 45, 'Concreto', 'SABE');
+INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('13/31', 2350, 45, 'Concreto', 'SABE');
 UPDATE fir SET capital_airport_icao = 'SABE' where id = 'SAEF';
 
 
