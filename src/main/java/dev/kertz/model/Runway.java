@@ -8,7 +8,7 @@ import lombok.Getter;
 public class Runway {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     private String designator;
 

@@ -1,15 +1,13 @@
 package dev.kertz.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.Data;
 import java.util.Set;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class Airport {
+
 	@Id
 	@Column(length = 4)
 	private String ICAO;
@@ -44,6 +42,6 @@ public class Airport {
 	@JoinColumn(name = "fir")
 	private Fir fir;
 
-	@OneToMany
+	@OneToMany( mappedBy = "airport", fetch = FetchType.EAGER)
 	private Set<Runway> runways;
 }
