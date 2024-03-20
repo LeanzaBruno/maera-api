@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 public class WeatherPhenomDecoder extends SingleDecoder {
 
     public WeatherPhenomDecoder(){
-        super("(?<qualifier>[+-]|VC)?(?<descriptor>MI|BC|PR|DR|BL|SH|TS|FZ)?(?<phenom>DZ|RA|SN|PL|GR|GS|BR|FG|FU|VA|DU|SA|HZ|(?<!TEM)PO|SQ|FC|SS|DS)");
+        super("(?<qualifier>[+-]|VC)?(?<descriptor>MI|BC|PR|DR|BL|SH|TS|FZ)?(?<phenom>DZ|RA|SN|PL|GR|GS|BR|FG|FU|VA|DU|SA|HZ|(?<!TEM)PO|SQ|FC|SS|DS|NSW)");
     }
 
     @Override
@@ -22,9 +22,12 @@ public class WeatherPhenomDecoder extends SingleDecoder {
         Matcher matcher = super.getMatcher(section);
 
         if(matcher.find()){
+            Phenom phenom = getPhenom(matcher.group("phenom"));
+            if(phenom == Phenom.NSW)
+                return Optional.of( new Decoding(phenom.description(), section));
+
             Qualifier qualifier = getQualifier(matcher.group("qualifier"));
             Descriptor descriptor = getDescriptor(matcher.group("descriptor"));
-            Phenom phenom = getPhenom(matcher.group("phenom"));
 
             String decoding = phenom.description() + (descriptor != null ? descriptor.description() : "") + qualifier.description();
 

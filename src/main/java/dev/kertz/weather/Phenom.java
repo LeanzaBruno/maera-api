@@ -18,7 +18,8 @@ public enum Phenom {
     SQ("Turbonadas"),
     FC("Nube en forma de embudo"),
     SS("Tempestad de arena"),
-    DS("Tempestad de polvo");
+    DS("Tempestad de polvo"),
+    NSW("No Significant Weather (Ningún fenómeno significativo)");
 
     private final String description;
 
