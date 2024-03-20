@@ -2,8 +2,16 @@ package dev.kertz.service.decoders;
 
 import dev.kertz.dto.Decoding;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
+
+import static java.lang.Integer.parseInt;
 
 @Service
 public class PublicationDecoder extends SingleDecoder {
@@ -18,9 +26,11 @@ public class PublicationDecoder extends SingleDecoder {
 
         if( matcher.find() ){
             String dayofMonth = matcher.group("date");
-            String hours = matcher.group("hours");
-            String minutes = matcher.group("minutes");
-            return Optional.of(new Decoding("El reporte pertenece a la hora " + hours + ":" + minutes + " UTC del día " + dayofMonth + ".", section));
+            int hours = parseInt( matcher.group("hours") );
+            int minutes = parseInt( matcher.group("minutes"));
+            LocalTime utc = LocalTime.of(hours, minutes);
+            LocalTime local = LocalTime.of(hours-3 , minutes);
+            return Optional.of(new Decoding("El reporte pertenece a la hora " + utc + " UTC (" + local + " UTC-3) del día " + dayofMonth + ".", section));
         }
         return Optional.empty();
     }
