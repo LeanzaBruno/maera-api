@@ -12,7 +12,7 @@ import static java.lang.Integer.parseInt;
 public class CloudCoverDecoder extends SingleDecoder {
 
     public CloudCoverDecoder(){
-        super("(?<cover>FEW|BKN|SCT|OVC)(?<altitude>\\d{3})(?<type>CB|TCU)?");
+        super("(?<cover>FEW|BKN|SCT|OVC)(?<altitude>\\d{2,3})(?<type>CB|TCU)?");
     }
 
     @Override

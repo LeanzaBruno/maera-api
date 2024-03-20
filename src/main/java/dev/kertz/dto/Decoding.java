@@ -34,6 +34,6 @@ public class Decoding {
 
     @Override
     public String toString(){
-        return "section: " + getSection() + ",\ndecodification: " + decodification;
+        return "[section: \"" + getSection() + "\", decodification: \"" + decodification + "\"]";
     }
 }

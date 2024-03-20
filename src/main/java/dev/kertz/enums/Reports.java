@@ -6,9 +6,9 @@ public class Reports{
 
     @Getter
     public enum Type {
-        METAR("Informe meteorológico ordinario del aeródromo"),
+        METAR("METeorological Aerodrome Report (Informe meteorológico ordinario del aeródromo)"),
         SPECI("Informe meteorológico especial del aeródromo"),
-        TAF("Pronóstico de aeródromo");
+        TAF("Terminal Aerodrome Forecast (Pronóstico de aeródromo)");
 
         private final String meaning;
 
