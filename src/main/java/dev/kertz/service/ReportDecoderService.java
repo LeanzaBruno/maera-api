@@ -1,7 +1,6 @@
 package dev.kertz.service;
 
 import dev.kertz.dto.Decoding;
-import dev.kertz.model.Report;
 import dev.kertz.service.decoders.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,9 @@ public class ReportDecoderService {
     @Autowired
     private List<MultiDecoder> multiDecoders;
 
-    public List<Decoding> decode(Report report){
+    public List<Decoding> decode(String rawReport){
         List<Decoding> decodings = new LinkedList<>();
-        final String[] sections = report.getRaw().split(" ");
+        final String[] sections = rawReport.split(" ");
 
         int index = 0;
         while( index < sections.length ){

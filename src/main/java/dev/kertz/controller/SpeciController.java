@@ -1,10 +1,9 @@
 package dev.kertz.controller;
 
-import dev.kertz.dto.ReportDTO;
-import dev.kertz.service.ReportService;
+import dev.kertz.dto.SPECI;
+import dev.kertz.service.ReportProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -12,16 +11,16 @@ import java.util.List;
 public class SpeciController {
 
     @Autowired
-    private ReportService reportService;
+    private ReportProviderService reportsProvider;
 
 
     @GetMapping("/{icao}")
-    public ReportDTO getSpeci(@PathVariable String icao){
-        return reportService.getSpeci(icao);
+    public SPECI getSPECI(@PathVariable String icao){
+        return reportsProvider.getSPECI(icao);
     }
 
-    @GetMapping
-    public List<ReportDTO> getCurrentSpeci(){
-        return reportService.getCurrentSpeci();
+    @GetMapping("/all")
+    public List<SPECI> getCurrentsSpeci(){
+        return reportsProvider.getAllSPECI();
     }
 }

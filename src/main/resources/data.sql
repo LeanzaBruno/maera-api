@@ -1,9 +1,9 @@
-INSERT INTO fir (id, name) VALUES
-('SAEF', 'Ezeiza ACC'),
-('SACF', 'Cordoba ACC'),
-('SAMF', 'Mendoza ACC'),
-('SAVF', 'Comodoro Rivadavia ACC'),
-('SARR', 'Resistencia ACC');
+INSERT INTO fir (icao, name) VALUES
+('SAEF', 'Ezeiza'),
+('SACF', 'Cordoba'),
+('SAMF', 'Mendoza'),
+('SAVF', 'Comodoro Rivadavia'),
+('SARR', 'Resistencia');
 
 INSERT INTO province (name) VALUES
 ('CABA'),
@@ -36,7 +36,7 @@ INSERT INTO province (name) VALUES
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
 ('SABE', 'AEP', 'AER', 87582, 'Aeroparque Jorge Newbery', 'SAEF', 'CABA', 'CABA', true, 6, -34.5593, -58.414);
 INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('13/31', 2350, 45, 'Concreto', 'SABE');
-UPDATE fir SET capital_airport_icao = 'SABE' where id = 'SAEF';
+UPDATE fir SET capital_airport_icao = 'SABE' WHERE icao = 'SAEF';
 
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
@@ -147,7 +147,7 @@ INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_stati
 ('SACO', 'COR', 'CBA', 87344, 'Aeropuerto Internacional Ingeniero Ambrosio Taravella', 'SACF', 'Córdoba', 'Córdoba', true, 484, -31.3121, -64.2084);
 INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES
 ('05/23', 2200, 45, 'Asfalto', 'SACO'), ('01/19', 3200, 45, 'Concreto', 'SACO');
-UPDATE fir SET capital_airport_icao = 'SACO' WHERE id = 'SACF';
+UPDATE fir SET capital_airport_icao = 'SACO' WHERE icao = 'SACF';
 
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
@@ -204,7 +204,7 @@ INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('0
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
 ('SAME', 'MDZ', 'DOZ', 87418, 'Aeropuerto Internacional El Plumerillo', 'SAMF', 'Mendoza', 'Mendoza', true, 705, -32.8317, -68.7928);
 INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('18/36', 2835, 54, 'Concreto', 'SAME');
-UPDATE fir SET capital_airport_icao = 'SAME' WHERE id = 'SAMF';
+UPDATE fir SET capital_airport_icao = 'SAME' WHERE icao = 'SAMF';
 
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
@@ -237,7 +237,7 @@ INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
 ('SARE', 'RES', 'SIS', 87155, 'Aeropuerto Internacional de Resistencia', 'SARR', 'Resistencia', 'Chaco', true, 53, -27.45, -59.05);
 INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('03/21', 2770, 45, 'Asfalto', 'SARE');
-UPDATE fir SET capital_airport_icao = 'SARE' WHERE id = 'SARR';
+UPDATE fir SET capital_airport_icao = 'SARE' WHERE icao = 'SARR';
 
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
@@ -273,7 +273,7 @@ INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES
 ('SAVC', 'CRD', 'CRV', 87860, 'Aeropuerto Internacional General Mosconi', 'SAVF', 'Comodoro Rivadavia', 'Chubut', true, 58, -45.7852, -67.4656);
 INSERT INTO runway (designator, length, width, surface, airport_icao) VALUES ('07/25', 2760, 50, 'Concreto', 'SAVC');
-UPDATE fir SET capital_airport_icao = 'SAVC' WHERE id = 'SAVF';
+UPDATE fir SET capital_airport_icao = 'SAVC' WHERE icao = 'SAVF';
 
 
 INSERT INTO airport (icao, iata, anac, wmo, name, fir, city, province, taf_station, elevation, latitude, longitude) VALUES

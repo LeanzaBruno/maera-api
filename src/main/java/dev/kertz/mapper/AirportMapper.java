@@ -21,7 +21,7 @@ public class AirportMapper {
                 airport.getLatitude(),
                 airport.getLongitude(),
                 airport.getProvince().getName(),
-                airport.getFir().getId(),
+                airport.getFir().getIcao(),
                 airport.getRunways().stream().map(RunwayMapper::toDTO).toList()
         );
     }

@@ -1,7 +1,7 @@
 package dev.kertz.controller;
 
-import dev.kertz.dto.ReportDTO;
-import dev.kertz.service.ReportService;
+import dev.kertz.dto.PRONAREA;
+import dev.kertz.service.ReportProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PronareaController {
 
     @Autowired
-    private ReportService reportService;
+    private ReportProviderService reportProvider;
 
-
-    @GetMapping("/{firId}")
-    public ReportDTO getPronarea(@PathVariable String firId){
-        return reportService.getPronarea(firId);
+    @GetMapping("/{firIcao}")
+    public PRONAREA getPronarea(@PathVariable String firIcao){
+        return reportProvider.getPRONAREA(firIcao);
     }
 }

@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Fir {
+public class FIR {
 
 	@Id
 	@Column(length = 4)
-	private String id;
+	private String icao;
 	private String name;
 	@OneToOne private Airport capitalAirport;
 }

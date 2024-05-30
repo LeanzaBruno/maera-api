@@ -5,6 +5,6 @@ import dev.kertz.model.Airport;
 public class InvalidTafStationException extends RuntimeException{
 
     public InvalidTafStationException(Airport airport){
-        super("Error: Airport " + airport.getICAO() + " station doesn't provide taf reports");
+        super("Airport " + airport.getICAO() + " doesn't provide taf reports");
     }
 }

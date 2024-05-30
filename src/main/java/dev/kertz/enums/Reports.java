@@ -6,18 +6,22 @@ public class Reports{
 
     @Getter
     public enum Type {
-        METAR("METeorological Aerodrome Report (Informe meteorológico ordinario del aeródromo)"),
-        SPECI("Informe meteorológico especial del aeródromo"),
-        TAF("Terminal Aerodrome Forecast (Pronóstico de aeródromo)");
+        METAR("METeorological Aerodrome Report (Informe meteorológico ordinario del aeródromo)",
+                "https://ssl.smn.gob.ar/mensajes/index.php?observacion=metar&operacion=consultar"),
+        SPECI("SPECI es un tipo de METAR emitido excepcionalmente cuando las condiciones cambian drásticamente",
+                "https://ssl.smn.gob.ar/mensajes/index.php?observacion=speci&operacion=consultar"),
+        TAF("Terminal Aerodrome Forecast (Pronóstico de aeródromo) es un pronóstico meteorológico para un aeropuerto en específico",
+                "https://ssl.smn.gob.ar/mensajes/index.php?observacion=taf&operacion=consultar"),
+        PRONAREA("Pronóstico de área", "https://ssl.smn.gob.ar/mensajes/index.php?observacion=pronarea&operacion=consultar"),
+        SIGMET("SIGnificant METeorology (Meteorología significativa) es un reporte emitido para una área de información de vuelo (FIR)",
+                "https://ssl.smn.gob.ar/mensajes/index.php?observacion=sigmet&operacion=consultar");
 
         private final String meaning;
+        private final String url;
 
-        Type(String meaning){
+        Type(String meaning, String url){
             this.meaning = meaning;
-        }
-
-        public String getName(){
-            return name().replace('_', ' ');
+            this.url = url;
         }
     }
 

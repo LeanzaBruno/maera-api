@@ -10,7 +10,7 @@ import static java.lang.Integer.parseInt;
 public class VisibilityDecoder extends SingleDecoder {
 
     public VisibilityDecoder(){
-        super("(?<!Q)\\d{4}(?!.)");
+        super("^[0-9]{4}$");
     }
 
     @Override

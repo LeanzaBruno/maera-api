@@ -1,12 +1,8 @@
 package dev.kertz.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class PronareaDTO {
-    private String raw;
+public record PRONAREA(String pronarea) {}
+/*
     private String firIdentifier;
     private String validTimeFrom;
     private String validTimeTo;
@@ -19,4 +15,4 @@ public class PronareaDTO {
     private String tropopause;
     private String windAndTemp;
     private String forecast;
-}
+ */

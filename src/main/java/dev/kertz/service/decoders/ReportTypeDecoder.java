@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 @Service
 public class ReportTypeDecoder extends MultiDecoder {
-    private final static Pattern REPORT_PAT = Pattern.compile("(?<type>METAR|TAF|SPECI|PRONAREA)");
+    private final static Pattern REPORT_PAT = Pattern.compile("(?<type>METAR|TAF|SPECI|PRONAREA|SIGMET)");
     private final static Pattern POSTFIX_PAT = Pattern.compile("(?<postfix>NIL|AMD|COR)");
 
     @Override
@@ -20,7 +20,7 @@ public class ReportTypeDecoder extends MultiDecoder {
         if( typeMatcher.find() ){
             AtomicReference<String> decoding = new AtomicReference<>();
             Stream.of(Reports.Type.values() )
-                    .filter( type -> type.getName().equals(typeMatcher.group("type")) )
+                    .filter( type -> type.name().equals(typeMatcher.group("type")) )
                     .findFirst()
                     .ifPresent( type -> decoding.set(type.getMeaning()));
 

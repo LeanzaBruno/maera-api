@@ -40,7 +40,7 @@ public class Airport {
 
 	@ManyToOne
 	@JoinColumn(name = "fir")
-	private Fir fir;
+	private FIR fir;
 
 	@OneToMany( mappedBy = "airport", fetch = FetchType.EAGER)
 	private Set<Runway> runways;

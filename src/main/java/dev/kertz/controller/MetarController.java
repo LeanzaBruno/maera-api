@@ -1,7 +1,7 @@
 package dev.kertz.controller;
 
-import dev.kertz.dto.ReportDTO;
-import dev.kertz.service.ReportService;
+import dev.kertz.dto.METAR;
+import dev.kertz.service.ReportProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 public class MetarController {
 
 	@Autowired
-	private ReportService reportDownloader;
+	private ReportProviderService reportProvider;
 
 	@GetMapping("/{icao}")
-	public ReportDTO getMetar(@PathVariable String icao){
-		return reportDownloader.getMetar(icao);
+	public METAR getMETAR(@PathVariable String icao){
+		return reportProvider.getMETAR(icao);
 	}
 }
