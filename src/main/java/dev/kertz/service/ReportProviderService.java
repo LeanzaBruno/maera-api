@@ -112,9 +112,12 @@ public class ReportProviderService {
 	private String downloadReport(ReportType type, Integer station) {
 		StringBuilder urlBuilder = new StringBuilder(type.getUrl()).append('&').append(station).append("=on");
 
+		System.out.println("URL: " + urlBuilder);
+
 		String rawReport = null;
 		int tries = 0;
 		while(true){
+			System.out.println("try number: " + (tries+1) + '\n');
 			try {
 				Document page = Jsoup.connect(urlBuilder.toString()).userAgent(USER_AGENT).get();
 				rawReport = parseReportFromPage(page).getFirst();
@@ -140,10 +143,13 @@ public class ReportProviderService {
 
 		for(Integer wmo : stations)
 			urlBuilder.append('&').append(wmo).append("=on");
+		
+		System.out.println("URL: " + urlBuilder);
 
 		List<String> rawReports = new LinkedList<>();
 		int tries = 0;
 		while(true){
+			System.out.println("try number: " + (tries+1) + '\n');
 			try {
 				Document page = Jsoup.connect(urlBuilder.toString()).userAgent(USER_AGENT).get();
 				rawReports = parseReportFromPage(page);
