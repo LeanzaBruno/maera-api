@@ -1,9 +1,7 @@
 package dev.kertz.service;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import dev.kertz.dto.*;
@@ -13,14 +11,12 @@ import dev.kertz.model.FIR;
 import dev.kertz.repository.AirportRepository;
 import dev.kertz.repository.FirRepository;
 import lombok.Getter;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 
 /**
@@ -29,7 +25,19 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ReportProviderService {
 
-	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0";
+	private List<String> userAgents = new LinkedList<>(Arrays.asList(
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3",
+		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.3",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.3",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.4",
+		"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115."
+	));
+	private static final int MAX_TRIES = 100;
 
 	@Getter
 	private enum ReportType {
@@ -58,7 +66,7 @@ public class ReportProviderService {
 
 	public METAR getMETAR(String icao){
 		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
-		String raw = downloadReport(ReportType.METAR, airport.getWMO());
+		String raw = downloadReport(ReportType.METAR, airport);
 		return new METAR(raw);
 	}
 
@@ -69,14 +77,14 @@ public class ReportProviderService {
 		if( ! airport.isTafStation())
 			throw new InvalidTafStationException(airport);
 
-		String raw = downloadReport(ReportType.TAF, airport.getWMO());
+		String raw = downloadReport(ReportType.TAF, airport);
 		return new TAF(raw);
 	}
 
 
 	public SPECI getSPECI(String icao){
 		Airport airport = airportRepository.findByICAOIgnoreCase(icao).orElseThrow( () -> new AirportNotFoundException(icao));
-		String report = downloadReport(ReportType.SPECI, airport.getWMO());
+		String report = downloadReport(ReportType.SPECI, airport);
 		if(report.isEmpty())
 			throw new SpeciNotFoundException(icao);
 		return new SPECI(report);
@@ -85,73 +93,117 @@ public class ReportProviderService {
 
 	public PRONAREA getPRONAREA(String firIcao){
 		FIR fir = firRepository.findByIcaoIgnoreCase(firIcao).orElseThrow( () -> new FirNotFoundException(firIcao));
-		String raw = downloadReport(ReportType.PRONAREA, fir.getCapitalAirport().getWMO());
+		String raw = downloadReport(ReportType.PRONAREA, fir.getCapitalAirport());
 		return new PRONAREA(raw);
 	}
 
 
 	public SIGMET getSIGMET(String firIcao){
 		FIR fir = firRepository.findByIcaoIgnoreCase(firIcao).orElseThrow( () -> new FirNotFoundException(firIcao));
-		String raw = downloadReport(ReportType.SIGMET, fir.getCapitalAirport().getWMO());
+		String raw = downloadReport(ReportType.SIGMET, fir.getCapitalAirport());
 		return new SIGMET(raw);
+	}
+
+	public List<SIGMET> getAllSIGMET() {
+		List<Airport> firList = firRepository.findAll().stream().map(FIR::getCapitalAirport).toList();
+		List<String> reports = downloadReports(ReportType.SIGMET, firList);
+
+		List<SIGMET> sigmets = new LinkedList<>();
+
+		for (String report : reports)
+			sigmets.add(new SIGMET(report));
+
+		return sigmets;
 	}
 
 
 	public List<SPECI> getAllSPECI(){
-		List<String> specis = downloadReports(ReportType.SPECI, airportRepository.findAll().stream().map(Airport::getWMO).toList());
-		return specis.stream().map(SPECI::new).toList();
+		List<String> reports = downloadReports(ReportType.SPECI, airportRepository.findAll());
+		List<SPECI> specis = new LinkedList<>();
+
+		for(String report : reports)
+			specis.add(new SPECI(report));
+
+		return specis;
 	}
 
 
 	/**
 	 * Downloads and returns a list of reports based on an airports list and a type of report
-	 * @param station station
+	 * @param airport the airport
 	 * @param type the type of the report
 	 * @return the list of reports
 	 */
-	private String downloadReport(ReportType type, Integer station) {
-		StringBuilder urlBuilder = new StringBuilder(type.getUrl()).append('&').append(station).append("=on");
+	private String downloadReport(ReportType type, Airport airport) {
+		StringBuilder urlBuilder = new StringBuilder(type.getUrl())
+				.append('&')
+				.append(airport.getWMO())
+				.append("=on")
+				.append('&')
+				.append(airport.getWMO()-1)
+				.append("=on");
 
-		System.out.println("URL: " + urlBuilder);
+		System.out.println("\n\nDownloading " + type.name() + " of " + airport.getICAO() + " from " + urlBuilder);
 
+		Collections.shuffle(userAgents);
 		String rawReport = null;
-		int tries = 0;
-		while(true){
-			System.out.println("try number: " + (tries+1) + '\n');
+		for(int i = 0 ; rawReport == null && i < userAgents.size() ; ++i) {
+			String userAgent = userAgents.get(i);
+			System.out.print("Trying with " + userAgent + ": ");
 			try {
-				Document page = Jsoup.connect(urlBuilder.toString()).userAgent(USER_AGENT).get();
+				Document page = Jsoup.connect(urlBuilder.toString()).userAgent(userAgent).get();
 				rawReport = parseReportFromPage(page).getFirst();
-				break;
-			}
-			catch(IOException e) {
-				if( tries < 3) ++tries;
-				else break;
+				System.out.println("OK");
+			} catch (IOException e) {
+				System.out.println("Failed");
 			}
 		}
+		/*
+		for(int i = 0 ; rawReport == null && i < USER_AGENTS.length ; ++i) {
+			String userAgent = USER_AGENTS[i];
+			System.out.println("\tTrying with user agent " + userAgent + ": ");
+
+			for(int j = 0 ; rawReport == null && j < MAX_TRIES ; ++j){
+				System.out.print("\t\tTry " + (j + 1) + ": ");
+				try {
+					Document page = Jsoup.connect(urlBuilder.toString()).userAgent(userAgent).get();
+					rawReport = parseReportFromPage(page).getFirst();
+					System.out.println("OK");
+				} catch (IOException e) {
+					System.out.println("Failed");
+				}
+			}
+
+		}
+		*/
+
 		return rawReport;
 	}
 
 
 	/**
 	 * Downloads and returns a list of reports based on an airports list and a type of report
-	 * @param stations list
+	 * @param airports the airports list
 	 * @param type the type of the report
 	 * @return the list of reports
 	 */
-	private List<String> downloadReports(ReportType type, List<Integer> stations) {
+	private List<String> downloadReports(ReportType type, List<Airport> airports) {
 		StringBuilder urlBuilder = new StringBuilder(type.getUrl());
 
-		for(Integer wmo : stations)
-			urlBuilder.append('&').append(wmo).append("=on");
-		
-		System.out.println("URL: " + urlBuilder);
+		for(Airport airport : airports)
+			urlBuilder.append('&')
+					.append(airport.getWMO())
+					.append("=on")
+					.append('&')
+					.append(airport.getWMO()-1)
+					.append("=on");
 
 		List<String> rawReports = new LinkedList<>();
 		int tries = 0;
 		while(true){
-			System.out.println("try number: " + (tries+1) + '\n');
+			System.out.println("Downloading " + type.name() + " from " + urlBuilder + " (try " + (tries+1) + ")");
 			try {
-				Document page = Jsoup.connect(urlBuilder.toString()).userAgent(USER_AGENT).get();
+				Document page = Jsoup.connect(urlBuilder.toString()).userAgent("Mozilla").get();
 				rawReports = parseReportFromPage(page);
 				break;
 			}

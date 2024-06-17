@@ -1,3 +1,3 @@
 package dev.kertz.dto;
 
-public record SIGMET(String raw) { }
+public record SIGMET(String sigmet) { }
